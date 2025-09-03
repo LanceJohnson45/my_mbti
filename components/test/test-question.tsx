@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { useRadioGroup, Flex, Text, Button } from "@chakra-ui/react";
+import { useRadioGroup, Flex, Text, Button, Box, Progress, VStack, HStack, Heading, Icon } from "@chakra-ui/react";
+import { FiArrowRight, FiArrowLeft } from "react-icons/fi";
+import { RiHeartPulseFill } from "react-icons/ri";
 
 import TestProgress from "./test-progress";
 import TestAnswerOption from "./test-answer-option";
@@ -34,8 +36,13 @@ export default function TestQuestion() {
         value as TestAnswer["type"];
 
       setUserTestAnswers(newUserTestAnswers);
-
-      handleNextButtonClick();
+      
+      // 自动前进到下一题
+      if (currentPersonalityTestIndex < personalityTest.length - 1) {
+        setTimeout(() => {
+          handleNextButtonClick();
+        }, 500);
+      }
     },
   });
 
@@ -92,90 +99,126 @@ export default function TestQuestion() {
       });
   }
 
+  const progress = ((currentPersonalityTestIndex + 1) / personalityTest.length) * 100;
+  const currentQuestion = personalityTest[currentPersonalityTestIndex];
+
   return (
     <Flex
-      py={4}
+      py={8}
       w="full"
       h="full"
-      gap={8}
       direction="column"
-      justifyContent="space-between"
       alignItems="center"
+      justifyContent="center"
+      px={{ base: 4, md: 8 }}
     >
-      <TestProgress />
-      <Flex direction="column">
-        <Text
-          fontWeight="bold"
-          align="center"
-        >
-          #{currentPersonalityTestIndex + 1}
-        </Text>
-        <Text
-          fontSize="lg"
-          align="center"
-        >
-          {personalityTest[currentPersonalityTestIndex].question}
-        </Text>
-      </Flex>
-      <Flex
-        w="full"
-        gap={4}
-        direction="column"
-        {...group}
+      <Box
+        width="100%"
+        maxW="700px"
+        bg="white"
+        borderRadius="xl"
+        boxShadow="0 4px 20px rgba(0,0,0,0.08)"
+        overflow="hidden"
+        position="relative"
       >
-        {personalityTest[currentPersonalityTestIndex].answerOptions.map(
-          (answerOption) => {
-            const radio = getRadioProps({ value: answerOption.type });
-
-            return (
-              <TestAnswerOption
-                key={answerOption.type}
-                {...radio}
+        <Progress 
+          value={progress} 
+          size="xs" 
+          colorScheme="primary" 
+          position="absolute"
+          top="0"
+          left="0"
+          right="0"
+        />
+        
+        <Box p={{ base: 6, md: 8 }}>
+          <HStack justifyContent="space-between" mb={8}>
+            <Text fontSize="sm" color="gray.500">问题 {currentPersonalityTestIndex + 1}/{personalityTest.length}</Text>
+            <Text fontSize="sm" color="gray.500">完成度 {progress.toFixed(0)}%</Text>
+          </HStack>
+          
+          <VStack spacing={8} align="stretch">
+            <Box>
+              <Heading 
+                size="md" 
+                fontWeight="600"
+                color="gray.800"
+                lineHeight="1.4"
+                mb={2}
               >
-                {answerOption.answer}
-              </TestAnswerOption>
-            );
-          }
-        )}
-      </Flex>
-      <Flex
-        direction="row"
-        w="full"
-        gap={4}
-      >
-        <Button
-          w="full"
-          variant="solid"
-          {...(currentPersonalityTestIndex === 0 && {
-            disabled: true,
-          })}
-          onClick={handlePreviousButtonClick}
-        >
-          上一题
-        </Button>
-        {isUserAlreadyPickAnswer &&
-        currentPersonalityTestIndex === personalityTest.length - 1 ? (
-          <Button
-            w="full"
-            colorScheme="primary"
-            onClick={handleSeeResultButtonClick}
-          >
-            查看结果
-          </Button>
-        ) : (
-          <Button
-            w="full"
-            colorScheme="primary"
-            variant="solid"
-            {...(!isUserAlreadyPickAnswer && {
-              disabled: true,
-            })}
-            onClick={handleNextButtonClick}
-          >
-            下一题
-          </Button>
-        )}
-      </Flex>
+                {currentQuestion.question}
+              </Heading>
+              <Text fontSize="sm" color="gray.500">
+                请选择最符合你的选项
+              </Text>
+            </Box>
+            
+            <VStack 
+              {...group} 
+              spacing={4} 
+              align="stretch"
+              bg="gray.50"
+              p={4}
+              borderRadius="lg"
+            >
+              {currentQuestion.answerOptions.map((answerOption) => {
+                const radio = getRadioProps({ value: answerOption.type });
+                return (
+                  <TestAnswerOption
+                    key={answerOption.type}
+                    {...radio}
+                  >
+                    {answerOption.answer}
+                  </TestAnswerOption>
+                );
+              })}
+            </VStack>
+          </VStack>
+          
+          <HStack justifyContent="space-between" mt={8}>
+            <Button
+              onClick={handlePreviousButtonClick}
+              isDisabled={currentPersonalityTestIndex === 0}
+              leftIcon={<FiArrowLeft size={16} />}
+              variant="ghost"
+              color="gray.600"
+              size="md"
+            >
+              上一题
+            </Button>
+            
+            {currentPersonalityTestIndex === personalityTest.length - 1 ? (
+              <Button
+                onClick={handleSeeResultButtonClick}
+                isDisabled={!isUserAlreadyPickAnswer}
+                colorScheme="primary"
+                size="md"
+                rightIcon={<Icon as={RiHeartPulseFill} />}
+                px={6}
+                boxShadow="0 4px 12px rgba(213, 63, 140, 0.2)"
+                _hover={{
+                  boxShadow: "0 6px 16px rgba(213, 63, 140, 0.3)",
+                }}
+                borderRadius="full"
+                fontWeight="500"
+              >
+                查看结果
+              </Button>
+            ) : (
+              <Button
+                onClick={handleNextButtonClick}
+                isDisabled={!isUserAlreadyPickAnswer}
+                rightIcon={<FiArrowRight size={16} />}
+                variant="solid"
+                colorScheme="primary"
+                size="md"
+              >
+                下一题
+              </Button>
+            )}
+          </HStack>
+        </Box>
+      </Box>
     </Flex>
   );
 }

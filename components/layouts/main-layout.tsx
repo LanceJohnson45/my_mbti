@@ -14,10 +14,10 @@ export default function MainLayout(props: MainLayoutProps) {
   return (
     <>
       <Head>
-        <title>MBTI 性格测试</title>
+        <title>MBTI 性格测试 | 发现真实的自我</title>
         <meta
           name="description"
-          content="MBTI 性格测试"
+          content="探索你的MBTI性格类型，了解自己的特质与优势"
         />
         <meta
           name="viewport"
@@ -31,8 +31,26 @@ export default function MainLayout(props: MainLayoutProps) {
       <Box
         w="full"
         minH="100vh"
-        background={props.hideBackground ? 'transparent' : 'linear-gradient(to bottom, rgba(66, 152, 255, 1) 0%, rgba(66, 152, 255, 0.6) 80px, rgba(127, 187, 255, 0.6), rgba(244, 244, 180, 0.6), rgba(252, 242, 59, 0.6))'}
+        background={props.hideBackground 
+          ? 'transparent' 
+          : 'linear-gradient(135deg, rgba(255, 240, 245, 0.9) 0%, rgba(255, 182, 193, 0.7) 50%, rgba(255, 240, 245, 0.9) 100%)'}
+        backgroundSize="cover"
+        backgroundAttachment="fixed"
+        position="relative"
       >
+        {!props.hideBackground && (
+          <Box
+            position="absolute"
+            top="0"
+            left="0"
+            right="0"
+            bottom="0"
+            bgImage="url('/images/pattern.png')"
+            opacity="0.05"
+            zIndex="0"
+            pointerEvents="none"
+          />
+        )}
         <Nav />
         <Flex
           as="main"
@@ -41,6 +59,7 @@ export default function MainLayout(props: MainLayoutProps) {
           justifyContent="center"
           alignItems="center"
           position="relative"
+          zIndex="1"
         >
           {props.children}
         </Flex>
