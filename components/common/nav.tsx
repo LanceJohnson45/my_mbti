@@ -30,16 +30,7 @@ export default function Nav() {
           </Button>
         </Link>
         {/* GitHub Repo stars */}
-        <a
-          href="https://github.com/vsme/mbti"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img
-            src="//img.shields.io/github/stars/vsme/mbti"
-            alt="GitHub Repo stars"
-          />
-        </a>
+ 
       </Flex>
       <Link href="/test/result/history">
         <Button

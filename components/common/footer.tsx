@@ -15,32 +15,11 @@ export default function Footer() {
       alignItems="center"
     >
       <Text>
-        本网站上的所有测试都基于此{" "}
-        <Link
-          href="/MBTI-personality-test.pdf"
-          target="_blank"
-        >
-          <Button
-            colorScheme="primary"
-            variant="link"
-          >
-            来源
-          </Button>
-        </Link>
+        本网站上的所有测试都基于MBTI心理学概念
       </Text>
       <Text>
-        Made by{" "}
-        <Link
-          href="https://github.com/vsme"
-          target="_blank"
-        >
-          <Button
-            colorScheme="primary"
-            variant="link"
-          >
-            vsme
-          </Button>
-        </Link>
+        Copyright @Sirius
+         
       </Text>
     </Flex>
   );
